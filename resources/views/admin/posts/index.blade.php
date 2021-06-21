@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h1>OUR POSTS</h1>
-        <a href="{{ route('admin.posts.create') }}">Create a new post</a>
+        <a class="btn btn-primary" href="{{ route('admin.posts.create') }}">Create a new post</a>
 
         @if (session('deleted'))
             <div class="alert alert-success">

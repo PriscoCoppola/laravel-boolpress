@@ -39,6 +39,12 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
+        // VALIDATE
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+        
         $data = $request->all();
 
         $new_post = new Post();
@@ -92,6 +98,12 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
+        // VALIDATE
+        $request->validate([
+            'title' => 'required',
+            'content' => 'required',
+        ]);
+        
         $data = $request->all();
         $post->update($data);
 
