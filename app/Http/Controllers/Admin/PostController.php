@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Post;
 use App\Category;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -18,6 +19,7 @@ class PostController extends Controller
     public function index()
     {
         $posts = Post::all();
+        
 
         return view('admin.posts.index', compact('posts'));
     }
@@ -30,8 +32,9 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -46,6 +49,8 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'category_id' => 'exists:categories,id',
+            'tags' => 'exists:tags,id',
         ]);
         
         $data = $request->all();
@@ -54,6 +59,10 @@ class PostController extends Controller
         $data['slug'] = Str::slug($data['title'], '-');
         $new_post->fill($data);
         $new_post->save();
+
+        if(array_key_exists('tags', $data)) {
+            $new_post->tags()->attach($data['tags']);
+        }
 
         return redirect()->route('admin.posts.show', $new_post->id);
     }
@@ -85,12 +94,13 @@ class PostController extends Controller
     {
         $post = Post::find($id);
         $categories = Category::all();
+        $tags = Tag::all();
 
         if(! $post) {
             abort(404);
         }
 
-        return view('admin.posts.edit', compact('post', 'categories'));
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -106,10 +116,18 @@ class PostController extends Controller
         $request->validate([
             'title' => 'required',
             'content' => 'required',
+            'category_id' => 'exists:categories,id',
+            'tags' => 'exists:tags,id',
         ]);
         
         $data = $request->all();
         $post->update($data);
+
+        if(array_key_exists('tags', $data)) {
+            $post->tags()->sync($data['tags']);
+        } else {
+            $post->tags()->detach();
+        }
 
         return redirect()->route('admin.posts.show', $post);
 
@@ -124,6 +142,8 @@ class PostController extends Controller
     public function destroy(Post $post)
     {
         $post->delete();
+
+        $post->tags()->detach();
 
         return redirect()->route('admin.posts.index')->with('deleted', $post->title);
     }

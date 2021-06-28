@@ -14,8 +14,13 @@ class Post extends Model
         'category_id',
     ];
 
-    // RELAZIONE
+    // RELAZIONE POST-CATEGORY
     public function category() {
         return $this->belongsTo('App\Category');
+    }
+
+    // RELAZIONE POST-TAGS
+    public function tags() {
+        return $this->belongsToMany('App\Tag');
     }
 }

@@ -20,7 +20,8 @@ class UpdatePostsTable extends Migration
             // Definizione FK
             $table->foreign('category_id')
                 ->references('id')
-                ->on('categories');
+                ->on('categories')
+                ->onDelete('set null');
         });
     }
 
@@ -32,7 +33,11 @@ class UpdatePostsTable extends Migration
     public function down()
     {
         Schema::table('posts', function (Blueprint $table) {
-            //
+            // RIMOZIONE RELAZIONE
+            $table->dropForeign('posts_category_id_foreign');
+
+            // RIMOZIONE COLONNA
+            $table->dropColumn('category_id');
         });
     }
 }

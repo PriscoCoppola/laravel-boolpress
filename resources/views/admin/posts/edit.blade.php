@@ -41,6 +41,24 @@
                 </div>
 
                 <div class="mt-3">
+                    <h4>Tags</h4>
+
+                    @foreach ($tags as $tag)
+                        <span class="d-inline-block mr-3">
+                            <input type="checkbox" name="tags[]" id="tag{{ $tag->id }}" 
+                                value="{{ $tag->id }}"
+                                @if ($errors->any() && in_array($tag->id, old('tags'))) 
+                                    checked 
+                                @elseif (! $errors->any() && $post->tags->contains($tag->id))
+                                    checked
+                                @endif
+                            >
+                            <label for="tag{{ $tag->id }}">{{ $tag->name }}</label>
+                        </span>
+                    @endforeach
+                </div>
+
+                <div class="mt-3">
                     <input class="btn btn-primary" type="submit" value="Update">
                 </div>
             </form>

@@ -8,6 +8,12 @@
         @if ($post->category)
             <h3>Category: {{ $post->category->name }}</h3>
         @endif
+        @if (count($post->tags) > 0)
+            <h4 class="d-inline-block">Tags</h4>
+            @foreach ($post->tags as $tag)
+            <span class="badge badge-primary">{{ $tag->name }}</span>
+            @endforeach
+        @endif
         <div>{{ $post->content }}</div>
         <a href="{{ route('admin.posts.index') }}">Back to archive</a>
 
