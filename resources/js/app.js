@@ -11,8 +11,10 @@ window.axios = require("axios");
 
 // Init Vue main istance
 import App from "./App.vue";
+import router from "./router";
 
 const root = new Vue({
     el: "#root",
+    router,
     render: h => h(App)
 });
